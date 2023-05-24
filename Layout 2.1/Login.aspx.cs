@@ -35,9 +35,11 @@ namespace Login_Page
             }
             else if (emp.Password == textpass.Text)
             {
+                Response.Write("Authentication Approved");
 
                 Session["ID"] = emp.Id;
                 Response.Redirect("Calendar 1.aspx");
+                
             }   
             else
             {
