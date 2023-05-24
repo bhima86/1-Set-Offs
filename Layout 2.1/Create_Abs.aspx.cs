@@ -16,7 +16,8 @@ namespace WebApplication1
      
     public partial class WebForm1 : System.Web.UI.Page
     {
-        SqlConnection conn= new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
+        //Change you code what you have added on local machine
+        SqlConnection conn = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
 
       
 
