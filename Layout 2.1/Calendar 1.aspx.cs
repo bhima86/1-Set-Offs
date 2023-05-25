@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -6,125 +7,155 @@ using System.Web;
 using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SetOffs1;
 
 namespace WebApplication1
-{
-    // change code with your code that you have changed in local machine 
-    public partial class WebForm11 : System.Web.UI.Page
-    {//Change you code what you have added on local machine 
-        SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
-        protected void Page_Load(object sender, EventArgs e)
+
         {
-            today();
+            //SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
+            protected void Page_Load(object sender, EventArgs e)
+            {
+                if (!IsPostBack)
+                {
+                    LoadTodayRecords();
+                }
+
+
+            }
+
+
+
+            protected void Calendar1_SelectionChanged(object sender, EventArgs e)
+            {
+                LoadSelectedDateRecords();
+                //string selectDate = Calendar1.SelectedDate.ToString("yyyy-MM-dd");
+                //string todayDate = Calendar1.TodaysDate.ToString("yyyy-MM-dd");
+
+                //Response.Write(selectDate);
+                // Response.Write(todayDate);
+                /*
+                 List<EmployeeLeave> l = new List<EmployeeLeave>();
+                 DBConnection d = new DBConnection();
+                 l = d.GetEmployeeLeave(Calendar1.SelectedDate);
+
+                     GridView1.DataSource = l;
+                     GridView1.DataBind();   */
+
+            }
             /*
-            if (!IsPostBack)
+            private void today()
             {
-                today();
+                List<EmployeeLeave> l = new List<EmployeeLeave>();
+                DBConnection d = new DBConnection();
+                l = d.GetEmployeeLeave(Calendar1.TodaysDate);
+                GridView1.DataSource = l;
+                GridView1.DataBind();
+
             }*/
-            //string UserId = Session["Id"] as string;
-            //Label1.Text= UserId;
-            Session["ID1"] = Session["Id"];
-            string UserId = Session["Id"] as string;
-            Label1.Text= UserId;
-        }
 
-
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("Create_Abs.aspx");
-        }
-
-        protected void Calendar1_SelectionChanged(object sender, EventArgs e)
-        {
-
-            string SelectDate = Calendar1.SelectedDate.ToString("yyyy-MM-dd");
-            Response.Write(SelectDate);
-
-           
-            con.Open();
-                string query = "SELECT e.FirstName, l.LeaveType FROM Employee e INNER JOIN Leave l ON e.id = l.EMP_ID WHERE  '" + Calendar1.SelectedDate.ToString("yyyy-MM-dd") + "'between l.StartDate AND l.EndDate;";
-                SqlCommand cmd = new SqlCommand(query, con);
-                SqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows == true)
-                {
-                    GridView1.DataSource = sdr;
-                    GridView1.DataBind();
-                }
-                else
-                {
-                    //Empty data Table
-                    DataTable dt = new DataTable();
-                    GridView1.DataSource = dt;
-                    GridView1.DataBind();
-                }
-                con.Close();
-            
-                        
-        }    
-        
-        private void today()
-        {
-           
-            string query = "SELECT e.FirstName,l.LeaveType FROM Employee e INNER JOIN Leave l ON e.id = l.EMP_ID where  '" + Calendar1.TodaysDate.ToString("yyyy-MM-dd") + "'between l.StartDate AND l.EndDate";
-            SqlCommand cmd = new SqlCommand(query, con);
-            //SqlCommand cmd = new SqlCommand(query, con);
-            con.Open();
-            SqlDataReader sdr = cmd.ExecuteReader();
-            if(sdr.HasRows == true)
+            private List<EmployeeLeave> GetEmployeeLeavesByDate(DateTime date)
             {
-                GridView1.DataSource = sdr;
-                GridView1.DataBind();             
+                DBConnection d = new DBConnection();
+                return d.GetEmployeeLeave(date);
             }
-            else
+
+            private void LoadTodayRecords()
             {
-                //Empty data Table
-                DataTable dt = new DataTable();
-                GridView1.DataSource = dt;
+                DateTime today = DateTime.Today;
+
+                List<EmployeeLeave> todayLeaves = GetEmployeeLeavesByDate(today);
+
+                GridView1.DataSource = todayLeaves;
                 GridView1.DataBind();
             }
-            con.Close();
-        }
 
-        protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
-        {
-            if ( e.Day.IsWeekend)
+            private void LoadSelectedDateRecords()
             {
-                e.Day.IsSelectable = false;
-                e.Cell.ToolTip = "Chhuti hai bhai..";
-                
+                DateTime selectedDate = Calendar1.SelectedDate;
+                //  Response.Write(selectedDate);
+                if (selectedDate != DateTime.MinValue)
+                {
+                    List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(selectedDate);
+
+                    GridView1.DataSource = selectedDateLeaves;
+                    GridView1.DataBind();
+                }
+
             }
-            if(e.Day.IsOtherMonth )
+
+            protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
             {
-                e.Day.IsSelectable = false;
+                if (e.Day.IsWeekend)
+                {
+                    e.Day.IsSelectable = false;
+                    e.Cell.ToolTip = "Chhuti hai bhai..";
+
+                }
+                if (e.Day.IsOtherMonth)
+                {
+                    e.Day.IsSelectable = false;
+                }
+
+
+
             }
 
-            
-
-        }
-
-        protected void Button2_Click(object sender, EventArgs e)
-        {
-            string query = "Select Firstname From HolidayTable";
-            SqlCommand cmd2 = new SqlCommand(query, con);
-            con.Open();
-            SqlDataReader sdr2 = cmd2.ExecuteReader();
-            if (sdr2.HasRows == true)
+            protected void Calendar1_VisibleMonthChanged(object sender, MonthChangedEventArgs e)
             {
-                GridView1.DataSource = sdr2;
+                Response.Write("Month Changed");
+                //gridview = disable
+                GridView1.DataSource = null; // Clear the data source
                 GridView1.DataBind();
+
+                if (Calendar1.SelectedDate == DateTime.MinValue) // means no date is selected
+                {
+                    GridView1.DataSource = null; // Clear the data source
+                    GridView1.DataBind();
+                }
+                // else
+                //  {
+                //  LoadSelectedDateRecords();
+                // }
             }
-            // Access the header row of the GridView
-            GridViewRow headerRow = GridView1.HeaderRow;
-            if (headerRow != null)
+
+
+
+            protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
             {
-                // Modify the header text
-                headerRow.Cells[0].Text = "Upcoming Holidays";
-                // Replace 0 with the appropriate cell index if you have multiple columns in the header.
+                if (e.Row.RowType == DataControlRowType.EmptyDataRow)
+                {
+                    // e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
+
+                    Response.Write(Calendar1.SelectedDate.Date);
+                    List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(Calendar1.SelectedDate);
+
+                    if (selectedDateLeaves.Count == 1)
+                    {
+                        if (Calendar1.SelectedDate.Date < DateTime.Today.Date)
+                        {
+                            e.Row.Cells[0].Text = "ALL WERE PRESENT !!";
+                        }
+                        else if (Calendar1.SelectedDate.Date > DateTime.Today.Date)
+                        {
+                            e.Row.Cells[0].Text = "NO RECORDS YET !!";
+                        }
+                        else if (Calendar1.SelectedDate.Date == DateTime.Today.Date)
+                        {
+                            e.Row.Cells[0].Text = "ALL ARE PRESENT !!";
+                        }
+                    }
+                    else
+                    {
+                        e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
+                    }
+
+
+
+                }
             }
-            con.Close() ;
         }
-
-
-
     }
+
+
+}
 }
