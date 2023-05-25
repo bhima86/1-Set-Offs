@@ -12,8 +12,6 @@ namespace Login_Page
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
-        // change code with your code that you have changed in local machine 
-        //when Committing you changes you need to add comment properly so that every one can understand it.
         SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
         protected void Page_Load(object sender, EventArgs e)
         {
