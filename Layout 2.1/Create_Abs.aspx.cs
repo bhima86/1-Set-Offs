@@ -13,17 +13,15 @@ using SetOffs1;
 
 namespace WebApplication1
 {
-     
+     // change code with your code that you have changed in local machine
+     // add DBConnection asdf
     public partial class WebForm1 : System.Web.UI.Page
     {
-        //Change you code what you have added on local machine
-        //
-        SqlConnection conn = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
 
-      
 
         static string b="2";
         int a = Int16.Parse(b);
+        
         DateTime from1;
         DateTime To1;
 

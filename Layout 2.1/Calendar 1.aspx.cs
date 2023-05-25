@@ -10,8 +10,7 @@ using System.Web.UI.WebControls;
 using SetOffs1;
 
 namespace WebApplication1
-    {
-        public partial class WebForm11 : System.Web.UI.Page
+
         {
             //SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
             protected void Page_Load(object sender, EventArgs e)
