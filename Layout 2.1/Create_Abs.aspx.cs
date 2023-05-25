@@ -13,18 +13,14 @@ using SetOffs1;
 
 namespace WebApplication1
 {
-    // This is the demo for github
-     
+
     public partial class WebForm1 : System.Web.UI.Page
     {
-        //Change you code what you have added on local machine
-        //
-        SqlConnection conn = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
 
-      
 
         static string b="2";
         int a = Int16.Parse(b);
+        
         DateTime from1;
         DateTime To1;
 

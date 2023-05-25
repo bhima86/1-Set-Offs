@@ -12,7 +12,6 @@ namespace Login_Page
 {
     public partial class WebForm1 : System.Web.UI.Page
     {
-        //Change you code what you have added on local machine
         SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -21,10 +20,10 @@ namespace Login_Page
 
         protected void sbt_Click(object sender, EventArgs e)
         {
-
+            // change code with your code that you have changed in local machine 
             //SqlCommand cmd = new SqlCommand("Select email,PASSWORD from Employee where email='" + textuser.Text + "'and Password='" + textpass.Text + " '", con);
             //con.Open();
-            Employee emp= new Employee();
+            Employee emp = new Employee();
             DBConnection cmd = new DBConnection();
             emp=cmd.GetEmployee(textuser.Text);
 
