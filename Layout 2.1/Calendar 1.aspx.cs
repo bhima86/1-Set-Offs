@@ -10,152 +10,149 @@ using System.Web.UI.WebControls;
 using SetOffs1;
 
 namespace WebApplication1
-
+{
+    public partial class WebForm11 : System.Web.UI.Page
+    {
+        //SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
+        protected void Page_Load(object sender, EventArgs e)
         {
-            //SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-2VT3DAG;Initial Catalog=db1;Integrated Security=True");
-            protected void Page_Load(object sender, EventArgs e)
+            if (!IsPostBack)
             {
-                if (!IsPostBack)
-                {
-                    LoadTodayRecords();
-                }
-
-
+                LoadTodayRecords();
             }
 
 
+        }
 
-            protected void Calendar1_SelectionChanged(object sender, EventArgs e)
-            {
-                LoadSelectedDateRecords();
-                //string selectDate = Calendar1.SelectedDate.ToString("yyyy-MM-dd");
-                //string todayDate = Calendar1.TodaysDate.ToString("yyyy-MM-dd");
 
-                //Response.Write(selectDate);
-                // Response.Write(todayDate);
-                /*
-                 List<EmployeeLeave> l = new List<EmployeeLeave>();
-                 DBConnection d = new DBConnection();
-                 l = d.GetEmployeeLeave(Calendar1.SelectedDate);
 
-                     GridView1.DataSource = l;
-                     GridView1.DataBind();   */
+        protected void Calendar1_SelectionChanged(object sender, EventArgs e)
+        {
+            LoadSelectedDateRecords();
+            //string selectDate = Calendar1.SelectedDate.ToString("yyyy-MM-dd");
+            //string todayDate = Calendar1.TodaysDate.ToString("yyyy-MM-dd");
 
-            }
+            //Response.Write(selectDate);
+            // Response.Write(todayDate);
             /*
-            private void today()
+             List<EmployeeLeave> l = new List<EmployeeLeave>();
+             DBConnection d = new DBConnection();
+             l = d.GetEmployeeLeave(Calendar1.SelectedDate);
+
+                 GridView1.DataSource = l;
+                 GridView1.DataBind();   */
+
+        }
+        /*
+        private void today()
+        {
+            List<EmployeeLeave> l = new List<EmployeeLeave>();
+            DBConnection d = new DBConnection();
+            l = d.GetEmployeeLeave(Calendar1.TodaysDate);
+            GridView1.DataSource = l;
+            GridView1.DataBind();
+
+        }*/
+
+        private List<EmployeeLeave> GetEmployeeLeavesByDate(DateTime date)
+        {
+            DBConnection d = new DBConnection();
+            return d.GetEmployeeLeave(date);
+        }
+
+        private void LoadTodayRecords()
+        {
+            DateTime today = DateTime.Today;
+
+            List<EmployeeLeave> todayLeaves = GetEmployeeLeavesByDate(today);
+
+            GridView1.DataSource = todayLeaves;
+            GridView1.DataBind();
+        }
+
+        private void LoadSelectedDateRecords()
+        {
+            DateTime selectedDate = Calendar1.SelectedDate;
+            //  Response.Write(selectedDate);
+            if (selectedDate != DateTime.MinValue)
             {
-                List<EmployeeLeave> l = new List<EmployeeLeave>();
-                DBConnection d = new DBConnection();
-                l = d.GetEmployeeLeave(Calendar1.TodaysDate);
-                GridView1.DataSource = l;
+                List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(selectedDate);
+
+                GridView1.DataSource = selectedDateLeaves;
                 GridView1.DataBind();
-
-            }*/
-
-            private List<EmployeeLeave> GetEmployeeLeavesByDate(DateTime date)
-            {
-                DBConnection d = new DBConnection();
-                return d.GetEmployeeLeave(date);
             }
 
-            private void LoadTodayRecords()
+        }
+
+        protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
+        {
+            if (e.Day.IsWeekend)
             {
-                DateTime today = DateTime.Today;
-
-                List<EmployeeLeave> todayLeaves = GetEmployeeLeavesByDate(today);
-
-                GridView1.DataSource = todayLeaves;
-                GridView1.DataBind();
-            }
-
-            private void LoadSelectedDateRecords()
-            {
-                DateTime selectedDate = Calendar1.SelectedDate;
-                //  Response.Write(selectedDate);
-                if (selectedDate != DateTime.MinValue)
-                {
-                    List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(selectedDate);
-
-                    GridView1.DataSource = selectedDateLeaves;
-                    GridView1.DataBind();
-                }
+                e.Day.IsSelectable = false;
+                e.Cell.ToolTip = "Chhuti hai bhai..";
 
             }
-
-            protected void Calendar1_DayRender(object sender, DayRenderEventArgs e)
+            if (e.Day.IsOtherMonth)
             {
-                if (e.Day.IsWeekend)
-                {
-                    e.Day.IsSelectable = false;
-                    e.Cell.ToolTip = "Chhuti hai bhai..";
-
-                }
-                if (e.Day.IsOtherMonth)
-                {
-                    e.Day.IsSelectable = false;
-                }
-
-
-
+                e.Day.IsSelectable = false;
             }
 
-            protected void Calendar1_VisibleMonthChanged(object sender, MonthChangedEventArgs e)
+
+
+        }
+
+        protected void Calendar1_VisibleMonthChanged(object sender, MonthChangedEventArgs e)
+        {
+            Response.Write("Month Changed");
+            //gridview = disable
+            GridView1.DataSource = null; // Clear the data source
+            GridView1.DataBind();
+
+            if (Calendar1.SelectedDate == DateTime.MinValue) // means no date is selected
             {
-                Response.Write("Month Changed");
-                //gridview = disable
                 GridView1.DataSource = null; // Clear the data source
                 GridView1.DataBind();
-
-                if (Calendar1.SelectedDate == DateTime.MinValue) // means no date is selected
-                {
-                    GridView1.DataSource = null; // Clear the data source
-                    GridView1.DataBind();
-                }
-                // else
-                //  {
-                //  LoadSelectedDateRecords();
-                // }
             }
+            // else
+            //  {
+            //  LoadSelectedDateRecords();
+            // }
+        }
 
 
 
-            protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+        protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.EmptyDataRow)
             {
-                if (e.Row.RowType == DataControlRowType.EmptyDataRow)
+                // e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
+
+                Response.Write(Calendar1.SelectedDate.Date);
+                List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(Calendar1.SelectedDate);
+
+                if (selectedDateLeaves.Count == 1)
                 {
-                    // e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
-
-                    Response.Write(Calendar1.SelectedDate.Date);
-                    List<EmployeeLeave> selectedDateLeaves = GetEmployeeLeavesByDate(Calendar1.SelectedDate);
-
-                    if (selectedDateLeaves.Count == 1)
+                    if (Calendar1.SelectedDate.Date < DateTime.Today.Date)
                     {
-                        if (Calendar1.SelectedDate.Date < DateTime.Today.Date)
-                        {
-                            e.Row.Cells[0].Text = "ALL WERE PRESENT !!";
-                        }
-                        else if (Calendar1.SelectedDate.Date > DateTime.Today.Date)
-                        {
-                            e.Row.Cells[0].Text = "NO RECORDS YET !!";
-                        }
-                        else if (Calendar1.SelectedDate.Date == DateTime.Today.Date)
-                        {
-                            e.Row.Cells[0].Text = "ALL ARE PRESENT !!";
-                        }
+                        e.Row.Cells[0].Text = "ALL WERE PRESENT !!";
                     }
-                    else
+                    else if (Calendar1.SelectedDate.Date > DateTime.Today.Date)
                     {
-                        e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
+                        e.Row.Cells[0].Text = "NO RECORDS YET !!";
                     }
-
-
-
+                    else if (Calendar1.SelectedDate.Date == DateTime.Today.Date)
+                    {
+                        e.Row.Cells[0].Text = "ALL ARE PRESENT !!";
+                    }
                 }
+                else
+                {
+                    e.Row.Cells[0].Text = "NO RECORDS FOUND !!";
+                }
+
+
+
             }
         }
     }
-
-
-}
 }
